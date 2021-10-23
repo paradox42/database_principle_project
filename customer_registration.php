@@ -1,5 +1,5 @@
 <script>
-alert('Please enter all values')
+// alert('Please enter all values')
 </script><!-- UI: Prithviraj Narahari, php code: Alexander Martens -->
 
 <head>
@@ -118,6 +118,62 @@ alert('Please enter all values')
             </form>
         </tr>
     </table>
+    <?php
+        include "database_connection.php";
+        function isValidDate($str){
+            $pattern = '/\d\d\/\d\d/';
+            return preg_match($pattern, $str);
+        }
+
+        if($_SERVER['REQUEST_METHOD'] == "POST"){
+            if(isset($_POST['username'],
+                $_POST['pin'],
+                $_POST['firstname'],
+                $_POST['lastname'],
+                $_POST['address'],
+                $_POST['city'],
+                $_POST['state'],
+                $_POST['zip'],
+                $_POST['credit_card'],
+                $_POST['expiration'])
+            ) {
+                $userName = $_POST['username'];
+                $password = $_POST['pin'];
+                $fName = $_POST['firstname'];
+                $lName = $_POST['lastname'];
+                $address = $_POST['address'];
+                $city = $_POST['city'];
+                $state = $_POST['state'];
+                $zip = $_POST['zip'];
+                $creditCardType = $_POST['credit_card'];
+                $cardExpDate = $_POST["expiration"];
+                if(!empty($_POST["card_number"])){
+                    echo "card number is set";
+                    echo "<br/>";
+                    $cardNum = $_POST["card_number"];
+                }else{
+                    $cardNum = 0;
+                }
+                if(!isValidDate($cardExpDate)){
+                    echo "Invalid expiration format";
+                }
+                else{
+                    $sql = "INSERT INTO customer (user_name, pwd, f_name, l_name, address, city, state, zip, credit_card_type, card_number, card_exp)
+                            VALUES('$userName','$password','$fName','$lName','$address','$city','$state',$zip,'$creditCardType',$cardNum,'$cardExpDate')";
+                    echo $sql;
+                    echo "<br/>";
+                    if($conn->query($sql) === TRUE){
+                        echo "Registration success!";
+                    }else{
+                        echo $conn->error;
+                    }
+                }
+            }
+            else{
+                echo "please fill out all required data";
+            }
+        }
+    ?>
 </body>
 
 </HTML>
