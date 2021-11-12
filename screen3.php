@@ -5,8 +5,9 @@
     <title> Search Result - 3-B.com </title>
     <script>
     //redirect to reviews page
-    function review(isbn) {
-        // window.location.href = "screen4.php?isbn=" + isbn + "&title=" + title;
+    function review(isbn, review) {
+        console.log(review);
+        window.location.href = `screen4.php?isbn=${isbn}`;
     }
     //add to cart
     function cart(isbn) {
@@ -55,7 +56,7 @@
                                 <p>_______________________________________________</p>
                             </td>
                         </tr> -->
-                    <?php
+                        <?php
                             function constructSearchOn($searchOn, $searchFor) {
                                 $res = "";
                                 $last = end($searchOn);
@@ -90,13 +91,14 @@
                                         Category: $category,
                                         Price: $price
                                     </div>
-                                    <button onClick='review($isbn, {$row['review']})'>Review</button> 
+                                    <button onClick='review($isbn)'>Review</button>
+                                    <t/>
                                     <button onClick='cart($isbn)'>Add to cart</button>
-                                    <br/>
+                                    <br/><br/>
                                 ";
                             }
                         ?>
-                    <?php
+                        <?php
                             include "database_connection.php";
                             $searchFor = $_GET['searchfor'];
                             $searchOn = $_GET['searchon'];
@@ -117,6 +119,7 @@
                                 $query .= " AND categories = '$categoryName'";
                             }
                             $result = $conn->query($query);
+                            // echo $query;
                             if(!$result){
                                 $errorMsg = $conn->lastErrorMsg();
                                 echo "error: $errorMsg";
@@ -133,7 +136,7 @@
             </td>
         </tr>
         <tr>
-            <br/>
+            <br />
             <td align="center">
                 <form action="confirm_order.php" method="get">
                     <input type="submit" value="Proceed To Checkout" id="checkout" name="checkout">

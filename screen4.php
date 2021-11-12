@@ -12,14 +12,28 @@
     </style>
 </head>
 
+<?php
+    include "database_connection.php";
+    $isbn = $_GET['isbn'];
+    $query = "select * from book where isbn = '$isbn'";
+    $result = $conn->querySingle($query, true);
+    if(!$result){
+        $errorMsg = $conn->lastErrorMsg();
+        echo "error: $errorMsg";
+    }
+    // else{
+    //     $result;
+    // }
+?>
+
 <body>
     <table align="center" style="border:1px solid blue;">
         <tr>
             <td align="center">
-                <h5> Reviews For:</h5>
+                <h5> Reviews For: <?php echo $result['name'] ?></h5>
             </td>
             <td align="left">
-                <h5> </h5>
+                <h5><?php echo $result['author'] ?></h5>
             </td>
         </tr>
 
@@ -27,7 +41,7 @@
             <td colspan="2">
                 <div id="bookdetails" style="overflow:scroll;height:200px;width:300px;border:1px solid black;">
                     <table>
-                        <td>review</td>
+                        <td><?php echo $result['review'] ?></td>
                     </table>
                 </div>
             </td>
