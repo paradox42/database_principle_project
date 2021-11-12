@@ -5,13 +5,13 @@
     <title> Search Result - 3-B.com </title>
     <script>
     //redirect to reviews page
-    function review(isbn, title) {
-        window.location.href = "screen4.php?isbn=" + isbn + "&title=" + title;
+    function review(isbn) {
+        // window.location.href = "screen4.php?isbn=" + isbn + "&title=" + title;
     }
     //add to cart
-    function cart(isbn, searchfor, searchon, category) {
-        window.location.href = "screen3.php?cartisbn=" + isbn + "&searchfor=" + searchfor + "&searchon=" + searchon +
-            "&category=" + category;
+    function cart(isbn) {
+        // window.location.href = "screen3.php?cartisbn=" + isbn + "&searchfor=" + searchfor + "&searchon=" + searchon +
+        //     "&category=" + category;
     }
     </script>
 </head>
@@ -54,58 +54,8 @@
                             <td colspan='2'>
                                 <p>_______________________________________________</p>
                             </td>
-                        </tr>
-                        <tr>
-                            <td align='left'><button name='btnCart' id='btnCart'
-                                    onClick='cart("978-0316055437", "", "Array", "all")'>Add to Cart</button></td>
-                            <td rowspan='2' align='left'>title</br>By fname lname</br><b>Publisher:</b>
-                                pub,</br><b>ISBN:</b> 978-0316055437</t> <b>Price:</b> 12.99</td>
-                        </tr>
-                        <tr>
-                            <td align='left'><button name='review' id='review'
-                                    onClick='review("978-0316055437", "title")'>Reviews</button></td>
-                        </tr>
-                        <tr>
-                            <td colspan='2'>
-                                <p>_______________________________________________</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align='left'><button name='btnCart' id='btnCart'
-                                    onClick='cart("978-0345339706", "", "Array", "all")'>Add to Cart</button></td>
-                            <td rowspan='2' align='left'>Lord of the Rings, The Fellowship of the</br>By J.R.R.
-                                Tolkien</br><b>Publisher:</b> Del Rey,</br><b>ISBN:</b> 978-0345339706</t> <b>Price:</b>
-                                8.09</td>
-                        </tr>
-                        <tr>
-                            <td align='left'><button name='review' id='review'
-                                    onClick='review("978-0345339706", "Lord of the Rings, The Fellowship of the")'>Reviews</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan='2'>
-                                <p>_______________________________________________</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align='left'><button name='btnCart' id='btnCart'
-                                    onClick='cart("978-0590353427", "", "Array", "all")'>Add to Cart</button></td>
-                            <td rowspan='2' align='left'>Harry Potter and the Sorcerer Stone</br>By J.K.
-                                Rowling</br><b>Publisher:</b> Scholastic,</br><b>ISBN:</b> 978-0590353427</t>
-                                <b>Price:</b> 8.47
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align='left'><button name='review' id='review'
-                                    onClick='review("978-0590353427", "Harry Potter and the Sorcerer Stone")'>Reviews</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan='2'>
-                                <p>_______________________________________________</p>
-                            </td>
                         </tr> -->
-                        <?php
+                    <?php
                             function constructSearchOn($searchOn, $searchFor) {
                                 $res = "";
                                 $last = end($searchOn);
@@ -121,11 +71,35 @@
                                 }
                                 return "(".$res.")";
                             }
+
+                            function constructNewTr($row) {
+                                //add to cart button,
+                                $name = $row["name"];
+                                $author = $row['author'];
+                                $publisher = $row['publisher'];
+                                $isbn = $row['ISBN'];
+                                $category = $row['categories'];
+                                $price = $row['price'];
+                                return
+                                "
+                                    <div>
+                                        Book Name: $name <br/>
+                                        Author: $author <br/>
+                                        Publisher: $publisher,
+                                        ISBN: $isbn <br/>
+                                        Category: $category,
+                                        Price: $price
+                                    </div>
+                                    <button onClick='review($isbn, {$row['review']})'>Review</button> 
+                                    <button onClick='cart($isbn)'>Add to cart</button>
+                                    <br/>
+                                ";
+                            }
                         ?>
-                        <?php
+                    <?php
+                            include "database_connection.php";
                             $searchFor = $_GET['searchfor'];
                             $searchOn = $_GET['searchon'];
-                            $publisher = $_GET['publisher'];
                             $category = $_GET['category'];
                             $categoryMap = array(
                                 1 => "Fantasy",
@@ -135,24 +109,31 @@
                             );
 
                             $query = "SELECT * FROM BOOK";
-                            if($searchFor && $searchOn){
+                            if($searchFor && $searchOn && $searchOn[0] != "anywhere"){
                                 $query .= " WHERE".constructSearchOn($searchOn, $searchFor);
-                            }
-                            if($publisher){
-                                echo "it has publisher";
                             }
                             if($category != "all"){
                                 $categoryName = $categoryMap[$category];
                                 $query .= " AND categories = '$categoryName'";
                             }
-                            echo $query;
+                            $result = $conn->query($query);
+                            if(!$result){
+                                $errorMsg = $conn->lastErrorMsg();
+                                echo "error: $errorMsg";
+                            }else{
+                                while($row = $result->fetchArray()){
+                                    $newTr = constructNewTr($row);
+                                    echo $newTr;
+                                }
+                            }
+
                         ?>
-                    </table>
                 </div>
 
             </td>
         </tr>
         <tr>
+            <br/>
             <td align="center">
                 <form action="confirm_order.php" method="get">
                     <input type="submit" value="Proceed To Checkout" id="checkout" name="checkout">

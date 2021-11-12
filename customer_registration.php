@@ -167,7 +167,7 @@
                         $errorMsg = $conn->lastErrorMsg();
                         echo "error: $errorMsg";
                     }else{
-                        echo "registration success!";
+                        echo "registration success";
                     }
                 }
             }
