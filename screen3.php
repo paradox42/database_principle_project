@@ -40,7 +40,7 @@
                 <div id="bookdetails"
                     style="overflow:scroll;height:180px;width:400px;border:1px solid black;background-color:LightBlue">
                     <table>
-                        <tr>
+                        <!-- <tr>
                             <td align='left'><button name='btnCart' id='btnCart'
                                     onClick='cart("123441", "", "Array", "all")'>Add to Cart</button></td>
                             <td rowspan='2' align='left'>iuhdf</br>By Avi Silberschatz</br><b>Publisher:</b>
@@ -92,7 +92,8 @@
                                     onClick='cart("978-0590353427", "", "Array", "all")'>Add to Cart</button></td>
                             <td rowspan='2' align='left'>Harry Potter and the Sorcerer Stone</br>By J.K.
                                 Rowling</br><b>Publisher:</b> Scholastic,</br><b>ISBN:</b> 978-0590353427</t>
-                                <b>Price:</b> 8.47</td>
+                                <b>Price:</b> 8.47
+                            </td>
                         </tr>
                         <tr>
                             <td align='left'><button name='review' id='review'
@@ -103,7 +104,49 @@
                             <td colspan='2'>
                                 <p>_______________________________________________</p>
                             </td>
-                        </tr>
+                        </tr> -->
+                        <?php
+                            function constructSearchOn($searchOn, $searchFor) {
+                                $res = "";
+                                $last = end($searchOn);
+                                foreach($searchOn as $index => $search) {
+                                    if($searchFor){               
+                                        if($search != "anywhere") {
+                                            $res .= " $search LIKE '$searchFor'";
+                                            if($search != $last) {
+                                                $res .= " OR";
+                                            }
+                                        }
+                                    }
+                                }
+                                return "(".$res.")";
+                            }
+                        ?>
+                        <?php
+                            $searchFor = $_GET['searchfor'];
+                            $searchOn = $_GET['searchon'];
+                            $publisher = $_GET['publisher'];
+                            $category = $_GET['category'];
+                            $categoryMap = array(
+                                1 => "Fantasy",
+                                2 => "Adventure",
+                                3 => "Fiction",
+                                4 => "Horror"
+                            );
+
+                            $query = "SELECT * FROM BOOK";
+                            if($searchFor && $searchOn){
+                                $query .= " WHERE".constructSearchOn($searchOn, $searchFor);
+                            }
+                            if($publisher){
+                                echo "it has publisher";
+                            }
+                            if($category != "all"){
+                                $categoryName = $categoryMap[$category];
+                                $query .= " AND categories = '$categoryName'";
+                            }
+                            echo $query;
+                        ?>
                     </table>
                 </div>
 

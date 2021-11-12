@@ -158,14 +158,16 @@
                     echo "Invalid expiration format";
                 }
                 else{
-                    $sql = "INSERT INTO customer (user_name, pwd, f_name, l_name, address, city, state, zip, credit_card_type, card_number, card_exp)
+                    $sql = "INSERT INTO customer (username, PIN, fName, lName, address, city, state, zip, cardNumber, carType, cardExpDate)
                             VALUES('$userName','$password','$fName','$lName','$address','$city','$state',$zip,'$creditCardType',$cardNum,'$cardExpDate')";
                     echo $sql;
                     echo "<br/>";
-                    if($conn->query($sql) === TRUE){
-                        echo "Registration success!";
+                    $result = $conn->exec($sql);
+                    if(!$result){
+                        $errorMsg = $conn->lastErrorMsg();
+                        echo "error: $errorMsg";
                     }else{
-                        echo $conn->error;
+                        echo "registration success!";
                     }
                 }
             }

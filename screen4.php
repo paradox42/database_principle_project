@@ -12,14 +12,6 @@
     </style>
 </head>
 
-<?php
-	include "database_connection.php";
-	$query = "select text from review;";
-	$result = $conn->query($query) or die($conn->error);;
-	$row = $result->fetch_assoc();
-	$firstRowText = $row["text"];
-?>
-
 <body>
     <table align="center" style="border:1px solid blue;">
         <tr>
@@ -35,7 +27,7 @@
             <td colspan="2">
                 <div id="bookdetails" style="overflow:scroll;height:200px;width:300px;border:1px solid black;">
                     <table>
-                        <td><?php echo $firstRowText ?></td>
+                        <td>review</td>
                     </table>
                 </div>
             </td>
