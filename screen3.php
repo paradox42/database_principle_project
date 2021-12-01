@@ -58,19 +58,28 @@
                         </tr> -->
                         <?php
                             function constructSearchOn($searchOn, $searchFor) {
+                                if(!$searchOn || $searchOn[0] == "anywhere") {
+                                    return " WHERE (name LIKE '$searchFor' OR author LIKE '$searchFor' 
+                                            OR publisher LIKE '$searchFor' OR ISBN LIKE '$searchFor')";
+                                }
                                 $res = "";
                                 $last = end($searchOn);
                                 foreach($searchOn as $index => $search) {
                                     if($searchFor){               
                                         if($search != "anywhere") {
-                                            $res .= " $search LIKE '$searchFor'";
+                                            if($search === "title"){
+                                                $res .= "name LIKE '$searchFor'";
+                                            }
+                                            else{
+                                                $res .= " $search LIKE '$searchFor'";
+                                            }
                                             if($search != $last) {
                                                 $res .= " OR";
                                             }
                                         }
                                     }
                                 }
-                                return "(".$res.")";
+                                return " WHERE (".$res.")";
                             }
 
                             function constructNewTr($row) {
@@ -99,6 +108,7 @@
                             }
                         ?>
                         <?php
+                        //pad percentage sign on both sides of keywords search
                             include "database_connection.php";
                             $searchFor = $_GET['searchfor'];
                             $searchOn = $_GET['searchon'];
@@ -110,16 +120,24 @@
                                 4 => "Horror"
                             );
 
-                            $query = "SELECT * FROM BOOK";
-                            if($searchFor && $searchOn && $searchOn[0] != "anywhere"){
-                                $query .= " WHERE".constructSearchOn($searchOn, $searchFor);
+                            $query = "SELECT * FROM book";
+
+                            if(!$searchFor){
+                                if($category != "all") {
+                                    $query .= " WHERE categories = '{$categoryMap[$category]}'";
+                                }
+                                else $query .= ";";
+                            } else {
+                                $query .= constructSearchOn($searchOn, $searchFor);
+                                if($category != "all") {
+                                    $query .= " AND categories = '{$categoryMap[$category]}'";
+                                } else {
+                                    $query .= ";";
+                                }
                             }
-                            if($category != "all"){
-                                $categoryName = $categoryMap[$category];
-                                $query .= " AND categories = '$categoryName'";
-                            }
+                            // echo "$query<br/>";
                             $result = $conn->query($query);
-                            // echo $query;
+                            echo $query;
                             if(!$result){
                                 $errorMsg = $conn->lastErrorMsg();
                                 echo "error: $errorMsg";
