@@ -11,8 +11,11 @@
     }
     //add to cart
     function cart(isbn) {
-        // window.location.href = "screen3.php?cartisbn=" + isbn + "&searchfor=" + searchfor + "&searchon=" + searchon +
-        //     "&category=" + category;
+        var storage = window.localStorage;
+        var qty = parseInt(storage.getItem(isbn));
+        qty = qty ? qty : 0
+        console.log(qty);
+        storage.setItem(isbn, qty += 1);
     }
     </script>
 </head>
@@ -41,26 +44,11 @@
                 <div id="bookdetails"
                     style="overflow:scroll;height:180px;width:400px;border:1px solid black;background-color:LightBlue">
                     <table>
-                        <!-- <tr>
-                            <td align='left'><button name='btnCart' id='btnCart'
-                                    onClick='cart("123441", "", "Array", "all")'>Add to Cart</button></td>
-                            <td rowspan='2' align='left'>iuhdf</br>By Avi Silberschatz</br><b>Publisher:</b>
-                                McGraw-Hill,</br><b>ISBN:</b> 123441</t> <b>Price:</b> 12.99</td>
-                        </tr>
-                        <tr>
-                            <td align='left'><button name='review' id='review'
-                                    onClick='review("123441", "iuhdf")'>Reviews</button></td>
-                        </tr>
-                        <tr>
-                            <td colspan='2'>
-                                <p>_______________________________________________</p>
-                            </td>
-                        </tr> -->
                         <?php
                             function constructSearchOn($searchOn, $searchFor) {
                                 if(!$searchOn || $searchOn[0] == "anywhere") {
-                                    return " WHERE (name LIKE '$searchFor' OR author LIKE '$searchFor' 
-                                            OR publisher LIKE '$searchFor' OR ISBN LIKE '$searchFor')";
+                                    return " WHERE (name LIKE '%$searchFor%' OR author LIKE '%$searchFor%' 
+                                            OR publisher LIKE '%$searchFor%' OR ISBN LIKE '%$searchFor%')";
                                 }
                                 $res = "";
                                 $last = end($searchOn);
@@ -68,10 +56,10 @@
                                     if($searchFor){               
                                         if($search != "anywhere") {
                                             if($search === "title"){
-                                                $res .= "name LIKE '$searchFor'";
+                                                $res .= "name LIKE '%$searchFor%'";
                                             }
                                             else{
-                                                $res .= " $search LIKE '$searchFor'";
+                                                $res .= " $search LIKE '%$searchFor%'";
                                             }
                                             if($search != $last) {
                                                 $res .= " OR";
@@ -137,7 +125,7 @@
                             }
                             // echo "$query<br/>";
                             $result = $conn->query($query);
-                            echo $query;
+                            // echo $query;
                             if(!$result){
                                 $errorMsg = $conn->lastErrorMsg();
                                 echo "error: $errorMsg";

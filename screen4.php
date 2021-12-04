@@ -15,25 +15,30 @@
 <?php
     include "database_connection.php";
     $isbn = $_GET['isbn'];
-    $query = "select * from book where isbn = '$isbn'";
-    $result = $conn->querySingle($query, true);
+    $query = "select * from book join review where book.isbn = review.isbn AND book.isbn = '$isbn'";
+    $result = $conn->query($query);
     if(!$result){
         $errorMsg = $conn->lastErrorMsg();
         echo "error: $errorMsg";
     }
-    // else{
-    //     $result;
-    // }
+    $name;
+    $author;
+    $reviews = array();
+    while ($row = $result->fetchArray()) {
+        $name = $row['name'];
+        $author = $row['author'];
+        array_push($reviews, $row['content']);
+    }
 ?>
 
 <body>
     <table align="center" style="border:1px solid blue;">
         <tr>
             <td align="center">
-                <h5> Reviews For: <?php echo $result['name'] ?></h5>
+                <h5> Reviews For: <?php echo $name ?></h5>
             </td>
             <td align="left">
-                <h5><?php echo $result['author'] ?></h5>
+                <h5><?php echo $author ?></h5>
             </td>
         </tr>
 
@@ -41,7 +46,11 @@
             <td colspan="2">
                 <div id="bookdetails" style="overflow:scroll;height:200px;width:300px;border:1px solid black;">
                     <table>
-                        <td><?php echo $result['review'] ?></td>
+                        <?php
+                            foreach($reviews as $review) {
+                                echo "<tr><td>$review</td></td>";
+                            }
+                        ?>
                     </table>
                 </div>
             </td>
