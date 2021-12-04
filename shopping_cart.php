@@ -32,7 +32,7 @@
             var qty = row.querySelector("input").value;
             var isbn = row.querySelector("input").id;
             var price = parseFloat(row.querySelectorAll("td").item(3).innerHTML);
-            storage.setItem(isbn, qty);
+            qty == 0 ? storage.removeItem(isbn) : storage.setItem(isbn, qty);
             var total = price * qty;
             subtotal += total;
         });

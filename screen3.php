@@ -4,18 +4,30 @@
 <head>
     <title> Search Result - 3-B.com </title>
     <script>
+    window.onload = function() {
+        updateTotal();
+    };
+
+    function updateTotal() {
+        var storage = window.localStorage;
+        var total = 0;
+        for (var i = 0; i < storage.length; i++) {
+            var item = storage.getItem(storage.key(i));
+            total += parseInt(item);
+        }
+        document.querySelector("#totalItem").innerHTML = total;
+    }
     //redirect to reviews page
     function review(isbn, review) {
-        console.log(review);
         window.location.href = `screen4.php?isbn=${isbn}`;
     }
     //add to cart
     function cart(isbn) {
         var storage = window.localStorage;
         var qty = parseInt(storage.getItem(isbn));
-        qty = qty ? qty : 0
-        console.log(qty);
+        qty = qty ? qty : 0;
         storage.setItem(isbn, qty += 1);
+        updateTotal();
     }
     </script>
 </head>
@@ -26,7 +38,7 @@
             <td align="left">
 
                 <h6>
-                    <fieldset>Your Shopping Cart has 0 items</fieldset>
+                    <fieldset>Your Shopping Cart has <span id="totalItem"></span> items</fieldset>
                 </h6>
 
             </td>
