@@ -3,6 +3,60 @@
 <head>
     <title>Proof purchase</title>
     <header align="center">Proof purchase</header>
+    <script>
+    window.onload = function() {
+        var username = JSON.parse(window.sessionStorage.userData).username;
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            var response = JSON.parse(this.responseText);
+            updatePurchase(response);
+            updateSubtotal(response);
+        }
+        xhttp.open("POST", "proof_purchase_helper.php", true);
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhttp.send(`username=${username}`);
+
+        updateShipping();
+        updateUserInfo();
+    }
+
+    function updateShipping() {
+        var userData = JSON.parse(window.sessionStorage.userData);
+        document.querySelector("#name").innerHTML = `${userData.fName} ${userData.lName}`;
+        document.querySelector("#street").innerHTML = `${userData.address}`;
+        document.querySelector("#city").innerHTML = `${userData.city}`;
+        document.querySelector("#stateZip").innerHTML = `${userData.state} ${userData.zip}`;
+    }
+
+    function updateUserInfo() {
+        var userData = JSON.parse(window.sessionStorage.userData);
+        console.log(userData);
+        document.querySelector("#userId").innerHTML = `user id: ${userData.username}`;
+        document.querySelector("#cardInfo").innerHTML =
+            `Card info: ${userData.carType}<br/> ${userData.cardNumber} - ${userData.cardExpDate}`;
+    }
+
+    function updatePurchase(response) {
+        var table = document.querySelector("#purchaseInfo");
+        var subtotal = 0;
+        for (var [key, value] of Object.entries(response)) {
+            var total = value.Qty * value.price;
+            table.innerHTML +=
+                `<tr>
+                    <td>
+                        ${value.name}<br/>By ${value.author}<br/>Price: $${value.price}
+                    </td>
+                    <td>${value.Qty}</td>
+                    <td>${value.Qty*value.price}</td>
+                    <td>${total}</td>
+                </tr>`;
+            subtotal += total;
+        }
+        // SubTotal:$0</br>Shipping_Handling:$0</br>_______</br>Total:$0 </div>
+        document.querySelector("#subtotal").innerHTML =
+            `SubTotal:$${subtotal}</br>Shipping_Handling:$4</br>_______</br>Total:$${subtotal+4} </div>`;
+    }
+    </script>
 </head>
 
 <body>
@@ -13,33 +67,35 @@
                     Shipping Address:
                 </td>
             </tr>
-            <td colspan="2">
+            <td id="name" colspan="2">
                 test test </td>
             <td rowspan="3" colspan="2">
-                <b>UserID:</b>test<br />
-                <b>Date:</b>2019-10-03<br />
-                <b>Time:</b>16:34:46<br />
-                <b>Card Info:</b>MASTER<br />12/2015 - 1234567812345678
+                <div id="userId">UserId: </div>
+                <!-- <b>Date:</b>2019-10-03<br />
+                <b>Time:</b>16:34:46<br /> -->
+                <!-- <b>Card Info:</b>MASTER<br />12/2015 - 1234567812345678 -->
+                <div id="cardInfo">Card Info:</div>
             </td>
             <tr>
-                <td colspan="2">
-                    test </td>
+                <td id="street" colspan="2">
+                    street </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    test </td>
+                <td id="city" colspan="2">
+                    City</td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td id="stateZip" colspan="2">
                     Tennessee, 12345 </td>
             </tr>
             <tr>
                 <td colspan="3" align="center">
                     <div id="bookdetails" style="overflow:scroll;height:180px;width:520px;border:1px solid black;">
-                        <table border='1'>
+                        <table id="purchaseInfo" border='1'>
                             <th>Book Description</th>
                             <th>Qty</th>
                             <th>Price</th>
+                            <th>Purchase Date-time</th>
                         </table>
                     </div>
                 </td>
@@ -52,7 +108,7 @@
                     </div>
                 </td>
                 <td align="right">
-                    <div id="bookdetails" style="overflow:scroll;height:180px;width:260px;border:1px solid black;">
+                    <div id="subtotal" style="overflow:scroll;height:180px;width:260px;border:1px solid black;">
                         SubTotal:$0</br>Shipping_Handling:$0</br>_______</br>Total:$0 </div>
                 </td>
             </tr>

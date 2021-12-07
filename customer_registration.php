@@ -113,7 +113,7 @@
             </form>
             <form id="no_registration" action="index.php" method="post">
                 <td colspan="2" align="center">
-                    <input type="submit" id="donotregister" name="donotregister" value="Don't Register">
+                    <input onclick type="submit" id="donotregister" name="donotregister" value="Don't Register">
                 </td>
             </form>
         </tr>
@@ -159,7 +159,7 @@
                 }
                 else{
                     $sql = "INSERT INTO customer (username, PIN, fName, lName, address, city, state, zip, cardNumber, carType, cardExpDate)
-                            VALUES('$userName','$password','$fName','$lName','$address','$city','$state',$zip,'$creditCardType',$cardNum,'$cardExpDate')";
+                            VALUES('$userName','$password','$fName','$lName','$address','$city','$state',$zip,'$cardNum','$creditCardType','$cardExpDate')";
                     echo $sql;
                     echo "<br/>";
                     $result = $conn->exec($sql);

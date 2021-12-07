@@ -3,12 +3,6 @@
 <head>
     <title>Shopping Cart</title>
     <script>
-    //remove from cart
-    function del(isbn) {
-        window.location.href = "shopping_cart.php?delIsbn=" + isbn;
-    }
-    </script>
-    <script>
     window.onload = function() {
         var params = constructParams();
         const xhttp = new XMLHttpRequest();
@@ -74,6 +68,11 @@
         cartTable.removeChild(td);
         storage.removeItem(isbn);
     }
+
+    function checkout() {
+        console.log(window.sessionStorage.userData);
+        window.sessionStorage.userData ? window.location.href = "./confirm_order.php" : "./customer_registration.php";
+    }
     </script>
 </head>
 
@@ -81,9 +80,7 @@
     <table align="center" style="border:2px solid blue;">
         <tr>
             <td align="center">
-                <form id="checkout" action="confirm_order.php" method="get">
-                    <input type="submit" name="checkout_submit" id="checkout_submit" value="Proceed to Checkout">
-                </form>
+                <button onclick="checkout()" id="checkout_submit">Checkout</button>
             </td>
             <td align="center">
                 <form id="new_search" action="screen2.php" method="post">
@@ -97,7 +94,7 @@
             </td>
         </tr>
         <tr>
-            <form id="recalculate" name="recalculate" action="" method="post">
+            <form id="recalculate" name="recalculate" method="post">
                 <td colspan="3">
                     <div id="bookdetails" style="overflow:scroll;height:180px;width:400px;border:1px solid black;">
                         <table align="center" BORDER="2" CELLPADDING="2" CELLSPACING="2" WIDTH="100%">
