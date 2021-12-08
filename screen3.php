@@ -29,6 +29,12 @@
         storage.setItem(isbn, qty += 1);
         updateTotal();
     }
+
+    function exit() {
+        window.localStorage.clear();
+        window.sessionStorage.clear();
+        window.location.href = "./index.php";
+    }
     </script>
 </head>
 
@@ -166,9 +172,9 @@
                 </form>
             </td>
             <td align="center">
-                <form action="index.php" method="post">
-                    <input type="submit" name="exit" value="EXIT 3-B.com">
-                </form>
+                <div>
+                    <button type="submit" onclick="exit()">EXIT 3-B.com</button>
+                </div>
             </td>
         </tr>
     </table>

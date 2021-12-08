@@ -73,6 +73,12 @@
         console.log(window.sessionStorage.userData);
         window.sessionStorage.userData ? window.location.href = "./confirm_order.php" : "./customer_registration.php";
     }
+
+    function exit() {
+        window.localStorage.clear();
+        window.sessionStorage.clear();
+        window.location.href = "./index.php";
+    }
     </script>
 </head>
 
@@ -88,9 +94,9 @@
                 </form>
             </td>
             <td align="center">
-                <form id="exit" action="index.php" method="post">
-                    <input type="submit" name="exit" id="exit" value="EXIT 3-B.com">
-                </form>
+                <div id="exit">
+                    <button type="submit" onclick="exit()">EXIT 3-B.com</button>
+                </div>
             </td>
         </tr>
         <tr>

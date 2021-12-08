@@ -3,6 +3,13 @@
 
 <head>
     <title>SEARCH - 3-B.com</title>
+    <script>
+        function exit() {
+            window.localStorage.clear();
+            window.sessionStorage.clear();
+            window.location.href = "./index.php";
+        }
+    </script>
 </head>
 
 <body>
@@ -36,9 +43,9 @@
                     <option value='4'>Horror</option>
                 </select></td>
             </form>
-            <form action="index.php" method="post">
-                <td><input type="submit" name="exit" value="EXIT 3-B.com" /></td>
-            </form>
+            <div>
+                <td><button type="submit" onclick="exit()">EXIT 3-B.com</button></td>
+            </div>
         </tr>
     </table>
 </body>

@@ -28,6 +28,7 @@
         console.log(userData);
         window.sessionStorage.setItem("userData", JSON.stringify(userData));
         window.location.href = "./screen2.php";
+        window.localStorage.clear();
     };
     </script>
 </head>

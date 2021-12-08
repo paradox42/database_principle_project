@@ -10,7 +10,6 @@
         xhttp.onload = function() {
             var response = JSON.parse(this.responseText);
             updatePurchase(response);
-            updateSubtotal(response);
         }
         xhttp.open("POST", "proof_purchase_helper.php", true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -47,14 +46,20 @@
                         ${value.name}<br/>By ${value.author}<br/>Price: $${value.price}
                     </td>
                     <td>${value.Qty}</td>
-                    <td>${value.Qty*value.price}</td>
                     <td>${total}</td>
+                    <td>${value.timestamp}</td>
                 </tr>`;
             subtotal += total;
         }
         // SubTotal:$0</br>Shipping_Handling:$0</br>_______</br>Total:$0 </div>
         document.querySelector("#subtotal").innerHTML =
             `SubTotal:$${subtotal}</br>Shipping_Handling:$4</br>_______</br>Total:$${subtotal+4} </div>`;
+    }
+
+    function exit() {
+        window.localStorage.clear();
+        window.sessionStorage.clear();
+        window.location.href = "./index.php";
     }
     </script>
 </head>
@@ -123,9 +128,9 @@
             </form>
         </td>
         <td align="left">
-            <form id="cancel" action="index.php" method="post">
-                <input type="submit" id="exit" name="exit" value="EXIT 3-B.com">
-            </form>
+            <div>
+                <button type="submit" onclick="exit()">EXIT 3-B.com</button>
+            </div>
         </td>
         </tr>
     </table>
