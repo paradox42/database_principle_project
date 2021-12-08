@@ -24,6 +24,7 @@
     $name;
     $author;
     $reviews = array();
+    echo $query;
     while ($row = $result->fetchArray()) {
         $name = $row['name'];
         $author = $row['author'];
